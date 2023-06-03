@@ -27,8 +27,14 @@ pipeline {
         }
 
         stage('Unit Test') {
-            steps{
+            steps {
                 sh 'mvn test'
+            }
+        }
+        
+        stage('Code analysis checkstyle') {
+            steps {
+                sh 'mvn checkstyle:checkstyle'
             }
         }
     }
