@@ -37,5 +37,23 @@ pipeline {
                 sh 'mvn checkstyle:checkstyle'
             }
         }
+
+        stage('Code anaysis sonar') {
+            environment {
+                scannerHome = tool 'sonar4.7'
+            }
+            steps {
+                withSonarQubeEnv('My SonarQube Server') {
+                sh '''${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=mibops \
+                -Dsonar.projectName=mibops \
+                -Dsonar.projectVersion=1.0 \
+                -Dsonar.sources=src/ \
+                -Dsonar.java.binaries=target/test-classes/com/visualpathit/account/controllerTest/ \
+                -Dsonar.junit.reportsPath=target/surefire-reports/ \
+                -Dsonar.jacoco.reportsPath=target/jacoco.exec \
+                -Dsonar.java.checkstyle.reportPaths=target/checkstyle-result.xml'''
+                }
+            }
+        }
     }
 }
