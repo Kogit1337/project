@@ -1,0 +1,48 @@
+version: '3.8'
+services:
+  vprodb:
+    build:
+      context: ./Docker-files/db
+    image: bimo22/mibopsdb
+    container_name: vprodb
+    ports:
+      - "3306:3306"
+    volumes:
+      - mibopsdbdata:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpass
+
+  vprocache01:
+    image: memcached
+    ports:
+      - "11211:11211"
+
+  vpromq01:
+    image: rabbitmq
+    ports:
+      - "15672:15672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+
+  vproapp:
+    build:
+      context: ./Docker-files/app
+    image: bimo22/mibopsapp
+    container_name: vproapp
+    ports:
+      - "8080:8080"
+    volumes:
+      - mibopsappdata:/usr/local/tomcat/webapps
+  
+  vproweb:
+    build:
+      context: ./Docker-files/web
+    image: bimo22/mibopsweb
+    container_name: vproweb
+    ports:
+      - "80:80"
+
+volumes:
+  mibopsdbdata: {}
+  mibopsappdata: {}
